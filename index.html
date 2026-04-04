@@ -651,18 +651,14 @@ Reformule chaque point avec des verbes d'action forts, des chiffres si possible,
       const prompt = buildPrompt(currentTool);
 
       try {
-        const response = await fetch("https://api.anthropic.com/v1/messages", {
+        const response = await fetch("/api/generate", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "x-api-key": "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", "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-          body: JSON.stringify({
-            model: "claude-sonnet-4-20250514",
-            max_tokens: 1000,
-            messages: [{ role: "user", content: prompt }]
-          })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt })
         });
 
         const data = await response.json();
-        const text = data.content?.map(b => b.text || '').join('') || "Erreur lors de la génération.";
+        const text = data.text || "Erreur lors de la génération.";
 
         outputText.textContent = text;
         outputCard.style.display = 'block';
