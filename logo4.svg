@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Fond blanc cassé -->
+  <rect width="512" height="512" rx="120" fill="#fffdf7"/>
+  
+  <!-- Hexagone doré -->
+  <polygon points="256,60 420,155 420,345 256,440 92,345 92,155" 
+           fill="#c9a84c" opacity="0.15"/>
+  <polygon points="256,80 400,165 400,335 256,420 112,335 112,165" 
+           fill="none" stroke="#c9a84c" stroke-width="3"/>
+  
+  <!-- P central -->
+  <text x="256" y="295" font-family="Georgia, serif" font-size="200" font-weight="bold" 
+        fill="#0d0d0d" text-anchor="middle">P</text>
+  
+  <!-- Badge IA en haut à droite -->
+  <circle cx="370" cy="155" r="45" fill="#c9a84c"/>
+  <text x="370" y="165" font-family="Arial, sans-serif" font-size="24" font-weight="bold"
+        fill="#0d0d0d" text-anchor="middle">IA</text>
+</svg>
