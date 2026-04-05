@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connexion – PrepIA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --ink: #0d0d0d;
+      --cream: #f5f0e8;
+      --gold: #c9a84c;
+      --gold-light: #e8d49a;
+      --muted: #7a7067;
+      --border: #e2d9c8;
+      --card: #fffdf7;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 48px 40px;
+      max-width: 420px;
+      width: 100%;
+      animation: fadeUp 0.5s ease both;
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .logo span { color: var(--gold); }
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 32px;
+    }
+    .tabs {
+      display: flex;
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 28px;
+    }
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--muted);
+      border: none;
+      background: transparent;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .tab.active {
+      background: var(--ink);
+      color: var(--cream);
+    }
+    .field { margin-bottom: 16px; }
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    input {
+      width: 100%;
+      background: var(--cream);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--gold); }
+    .btn {
+      width: 100%;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--gold); color: var(--ink); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .divider {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin: 20px 0;
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+    .stripe-btn {
+      width: 100%;
+      background: var(--gold);
+      color: var(--ink);
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: opacity 0.2s;
+    }
+    .stripe-btn:hover { opacity: 0.9; }
+    .msg {
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      display: none;
+    }
+    .msg.error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .msg.success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-decoration: none;
+    }
+    .back:hover { color: var(--ink); }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">Prep<span>IA</span></div>
+    <p class="subtitle">Accède à tous tes outils d'admission</p>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('login')">Connexion</button>
+      <button class="tab" onclick="switchTab('signup')">Inscription</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="login-form">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="ton@email.fr"/>
+      </div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" id="login-pass" placeholder="••••••••"/>
+      </div>
+      <button class="btn" onclick="login()">Se connecter</button>
+      <div class="msg" id="login-msg"></div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div id="signup-form" style="display:none;">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="signup-email" placeholder="ton@email.fr"/>
+      </div>
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" id="signup-pass" placeholder="8 caractères minimum"/>
+      </div>
+      <button class="btn" onclick="signup()">Créer mon compte</button>
+      <div class="divider">puis</div>
+      <button class="stripe-btn" onclick="window.location.href='https://buy.stripe.com/00w3cucCb3L33TC6a39AA01'">
+        S'abonner pour 9€/mois →
+      </button>
+      <div class="msg" id="signup-msg"></div>
+    </div>
+
+    <a href="/" class="back">← Retour à PrepIA</a>
+  </div>
+
+  <script>
+    const { createClient } = supabase;
+    const sb = createClient(
+      'https://imrfqmwmxsxoiygpnesj.supabase.co',
+      'sb_publishable__FqjYZm8fxexYQ7vjtVGNQ_iQu5r69k'
+    );
+
+    // Vérifier si déjà connecté
+    sb.auth.getSession().then(({ data }) => {
+      if (data.session) window.location.href = '/';
+    });
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('signup-form').style.display = tab === 'signup' ? 'block' : 'none';
+    }
+
+    function showMsg(id, type, text) {
+      const el = document.getElementById(id);
+      el.className = `msg ${type}`;
+      el.textContent = text;
+      el.style.display = 'block';
+    }
+
+    async function login() {
+      const email = document.getElementById('login-email').value;
+      const pass = document.getElementById('login-pass').value;
+      if (!email || !pass) return showMsg('login-msg', 'error', 'Remplis tous les champs.');
+      const btn = event.target;
+      btn.disabled = true; btn.textContent = 'Connexion...';
+      const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+      if (error) {
+        showMsg('login-msg', 'error', 'Email ou mot de passe incorrect.');
+        btn.disabled = false; btn.textContent = 'Se connecter';
+      } else {
+        window.location.href = '/';
+      }
+    }
+
+    async function signup() {
+      const email = document.getElementById('signup-email').value;
+      const pass = document.getElementById('signup-pass').value;
+      if (!email || !pass) return showMsg('signup-msg', 'error', 'Remplis tous les champs.');
+      if (pass.length < 8) return showMsg('signup-msg', 'error', 'Mot de passe trop court (8 caractères min).');
+      const btn = event.target;
+      btn.disabled = true; btn.textContent = 'Création...';
+      const { error } = await sb.auth.signUp({ email, password: pass });
+      if (error) {
+        showMsg('signup-msg', 'error', 'Erreur : ' + error.message);
+        btn.disabled = false; btn.textContent = 'Créer mon compte';
+      } else {
+        showMsg('signup-msg', 'success', '✅ Compte créé ! Vérifie ton email puis abonne-toi.');
+        btn.disabled = false; btn.textContent = 'Créer mon compte';
+      }
+    }
+  </script>
+</body>
+</html>
